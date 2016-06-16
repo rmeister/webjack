@@ -94,7 +94,6 @@ WebJack.Encoder = Class.extend({
 		// console.log("spb: "+ samplesPerBit);
 		// console.log("periods low: "+ periodsLowBit);
 		// console.log("periods high: "+ samplesPeriodHigh);
-
 		var preambleLength = Math.ceil(sampleRate*40/1000/samplesPerBit);
 		var pushbitLength =  Math.ceil(sampleRate*5/1000/samplesPerBit);
 
@@ -156,15 +155,7 @@ WebJack.Encoder = Class.extend({
 			}
 			pushBits(1, pushbitLength);
 
-			console.log("gen. audio length: " +samples.length);
-			var resampler = new WebJack.Resampler({inRate: sampleRate, outRate: targetSampleRate, inputBuffer: samples});
-			resampler.resample(samples.length);
-			var resampled = resampler.outputBuffer();
-			// console.log(samples);
-			console.log("resampled audio length: " + resampled.length);
-			// console.log(resampled);
-
-			return resampled;
+			return samples;
 		}
 	}
 });
