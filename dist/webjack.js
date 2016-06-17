@@ -87,10 +87,6 @@ WebJack.Encoder = Class.extend({
 		var freqHigh = 7350;
 
 		var samplesPerBit = Math.ceil(sampleRate/baud);
-		var samplesPeriodLow = Math.ceil(sampleRate/freqLow)
-		var samplesPeriodHigh = Math.ceil(sampleRate/freqHigh)
-		// var periodsLowBit = Math.floor(samplesPerBit/samplesPeriodLow);
-		// var periodsHighBit = Math.floor(samplesPerBit/samplesPeriodHigh);
 		// console.log("spb: "+ samplesPerBit);
 		// console.log("periods low: "+ periodsLowBit);
 		// console.log("periods high: "+ samplesPeriodHigh);
