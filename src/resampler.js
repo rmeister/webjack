@@ -32,6 +32,7 @@ WebJack.Resampler = Class.extend({
             }
             else {
                 initializeBuffers();
+                console.log("yep : " + outputBuffer.length);
                 ratioWeight = fromSampleRate / toSampleRate;
                 if (fromSampleRate < toSampleRate) {
                     resampleFunction = linearInterpolationFunction;
