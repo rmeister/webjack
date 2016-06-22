@@ -150,16 +150,7 @@ WebJack.Encoder = Class.extend({
 					pushBits( c&1, 1);
 			}
 			pushBits(1, pushbitLength);
-
-			console.log("gen. audio length: " +samples.length);
-			var resampler = new WebJack.Resampler({inRate: sampleRate, outRate: targetSampleRate, inputBuffer: samples});
-			resampler.resample(samples.length);
-			var resampled = resampler.outputBuffer();
-			// console.log(samples);
-			console.log("resampled audio length: " + resampled.length);
-			// console.log(resampled);
-
-			return resampled;
+			return samples;
 		}
 	}
 });
@@ -174,8 +165,8 @@ WebJack.Resampler = Class.extend({
 
         var resampler = this;
 
-        var fromSampleRate = +args.inRate;
-        var toSampleRate = +args.outRate;
+        var fromSampleRate = 44100;
+        var toSampleRate = +args.targetRate;
         var inputBuffer = args.inputBuffer;
         var outputBuffer;
         var ratioWeight, lastWeight, lastOutput, tailExists;
@@ -420,8 +411,15 @@ WebJack.Connection = Class.extend({
 		}
 
     	var samples = encoder.modulate(data);
-    	var dataBuffer = audioCtx.createBuffer(1, samples.length, sampleRate);
-    	dataBuffer.copyToChannel(samples, 0);
+		var resampler = new WebJack.Resampler({targetRate: sampleRate, inputBuffer: samples});
+		resampler.resample(samples.length);
+		var resampled = resampler.outputBuffer();
+
+    	console.log("gen. audio length: " + samples.length);
+		console.log("resampled audio length: " + resampled.length);
+
+    	var dataBuffer = audioCtx.createBuffer(1, resampled.length, sampleRate);
+    	dataBuffer.copyToChannel(resampled, 0);
 
     	playAudioBuffer(dataBuffer);
 

@@ -75,16 +75,7 @@ WebJack.Encoder = Class.extend({
 					pushBits( c&1, 1);
 			}
 			pushBits(1, pushbitLength);
-
-			console.log("gen. audio length: " +samples.length);
-			var resampler = new WebJack.Resampler({inRate: sampleRate, outRate: targetSampleRate, inputBuffer: samples});
-			resampler.resample(samples.length);
-			var resampled = resampler.outputBuffer();
-			// console.log(samples);
-			console.log("resampled audio length: " + resampled.length);
-			// console.log(resampled);
-
-			return resampled;
+			return samples;
 		}
 	}
 });
