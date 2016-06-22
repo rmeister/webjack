@@ -88,8 +88,15 @@ WebJack.Connection = Class.extend({
 		}
 
     	var samples = encoder.modulate(data);
-    	var dataBuffer = audioCtx.createBuffer(1, samples.length, sampleRate);
-    	dataBuffer.copyToChannel(samples, 0);
+		var resampler = new WebJack.Resampler({targetRate: sampleRate, inputBuffer: samples});
+		resampler.resample(samples.length);
+		var resampled = resampler.outputBuffer();
+
+    	console.log("gen. audio length: " + samples.length);
+		console.log("resampled audio length: " + resampled.length);
+
+    	var dataBuffer = audioCtx.createBuffer(1, resampled.length, sampleRate);
+    	dataBuffer.copyToChannel(resampled, 0);
 
     	playAudioBuffer(dataBuffer);
 

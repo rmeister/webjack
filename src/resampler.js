@@ -8,8 +8,8 @@ WebJack.Resampler = Class.extend({
 
         var resampler = this;
 
-        var fromSampleRate = +args.inRate;
-        var toSampleRate = +args.outRate;
+        var fromSampleRate = 44100;
+        var toSampleRate = +args.targetRate;
         var inputBuffer = args.inputBuffer;
         var outputBuffer;
         var ratioWeight, lastWeight, lastOutput, tailExists;
