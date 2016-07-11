@@ -33,7 +33,7 @@ function testNTransmissions(t, file, numOfTransmissions, content){
 			t.equal(callback.callCount, numOfTransmissions, "num of detected transmissions");
 			if (content != undefined)
 				t.equal(callback.alwaysCalledWithExactly(content), true, "decoded content correctly");
-			console.log(callback.printf('%C'));
+			//console.log(callback.printf('%C'));
 	});
 }
 

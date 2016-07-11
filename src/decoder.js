@@ -142,7 +142,7 @@ WebJack.Decoder = Class.extend({
 
 					case state.PREAMBLE:
 						// if (symbols >= 11 && symbols <= 49)
-						if (symbols >= preambleLength -3  && symbols <= preambleLength + 3) {
+						if (symbols >= preambleLength -3  && symbols <= preambleLength + 20) {
 							nextState = state.START;
 							state.lastBitState = 0;
 							state.byteBuffer = 0;
