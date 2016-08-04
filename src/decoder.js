@@ -191,17 +191,20 @@ WebJack.Decoder = Class.extend({
 
 				        if (bits_total > 11) {
 			          		nextState = state.PREAMBLE;
+			          		if (DEBUG) console.log('#too much bits#');
 				        } else if (bits_total == 11){ // all bits high, stop bit, push bit, preamble
 				        	addBitNTimes(1, symbols - 3);
 			          		nextState = state.START;
 			          		if (DEBUG) console.log('>emit< ' + state.wordBuffer[0].toString(2));
 			          		emit(state.wordBuffer);
+			          		if (DEBUG) console.log('>emit<');
 			          		state.wordBuffer = [];
 				        } else if (bits_total == 10) { // all bits high, stop bit, push bit, no new preamble
 				        	addBitNTimes(1, symbols - 2);
 			          		nextState = state.PREAMBLE;
 			          		if (DEBUG) console.log('|emit| ' + state.wordBuffer[0].toString(2));
 			          		emit(state.wordBuffer);
+			          		if (DEBUG) console.log('|emit|');
 				        } else if (bits_total == 9) { // all bits high, stop bit, no push bit
 				            addBitNTimes(1, symbols - 1);
 				            nextState = state.START;
@@ -229,6 +232,7 @@ WebJack.Decoder = Class.extend({
 							nextState = state.START;
 			          		if (DEBUG) console.log('>>emit<< ' + state.wordBuffer[0].toString(2));
 							emit(state.wordBuffer);
+			          		if (DEBUG) console.log('>>emit<<');
 							state.wordBuffer = [];
 						} else if (symbols >= 2) {	
 							nextState = state.PREAMBLE;
