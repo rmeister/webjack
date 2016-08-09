@@ -61,7 +61,9 @@ WebJack.Connection = Class.extend({
 	navigator = args.navigator || navigator;
 	navigator.mediaDevices.getUserMedia(
 		{
-		  audio: true,
+		  audio: {
+		      optional: [{ echoCancellation: false }]
+		  },
 		  video: false
 		}
 	).then(
