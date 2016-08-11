@@ -19,6 +19,7 @@ const readFile = (filepath) => {
 };
 
 var opts = {
+	debug : false,
 	sampleRate : 44100,
 	baud : 1225,
 	freqLow : 2450,
@@ -73,4 +74,12 @@ test('decodes much words, such sentence', function (t) {
 
 test('handles broken transmissions correctly', function (t) {
 	return testNTransmissions(t, "broken_one.wav", 0, undefined);
+});
+
+test('decodes variable preamble lengths', function (t) {
+	return testNTransmissions(t, "preamble_lengths.wav", 41, 'WebJack');
+});
+
+test('decodes variable preamble lengths, Nexus5 recording', function (t) {
+	return testNTransmissions(t, "preamble_lengths_nexus5.wav", 42, 'WebJack');
 });

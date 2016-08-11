@@ -31,7 +31,8 @@ WebJack.Decoder = Class.extend({
 			lastTransition : 0,
 			lastBitState : 0,
 			t : 0, // sample counter, no reset currently -> will overflow
-			c : 0  // counter for the circular correlation arrays
+			c : 0, // counter for the circular correlation arrays
+			p : 0  // 'time' since last pushbit, for variable preamble lengths
 		};
 
 		var cLowReal = new Float32Array(samplesPerBit/2);
@@ -122,6 +123,12 @@ WebJack.Decoder = Class.extend({
 			return symbols;
 		}
 
+		function preambleProbability(length){
+			var time_last_pushbit = state.p > 48 ? 48 : state.p;
+			var p = (time_last_pushbit + 1) / length;
+			return (1 - Math.abs(p-1));
+		}
+
 		function addBitNTimes(bit, n) {
 			if (state.bitCounter + n > 8)
 				throw 'byteBuffer too small';
@@ -146,6 +153,7 @@ WebJack.Decoder = Class.extend({
 		        buffer.length = 0;
 		    }
 		    onReceive(word);
+      		state.p = 0;
 		}
 		var emit = args.raw ? onReceive : emitString;
 
@@ -153,7 +161,6 @@ WebJack.Decoder = Class.extend({
 			// var a = performance.now();
 
 			var bitlengths = demod(samples);
-
 			var nextState = state.PREAMBLE;
 
 			for(var i = 0; i < bitlengths.length ; i++) {
@@ -162,12 +169,15 @@ WebJack.Decoder = Class.extend({
 				switch (state.current){
 
 					case state.PREAMBLE:
-						if (symbols >= 12 && symbols <= preambleLength + 20){
+						if (preambleProbability(symbols) > 0.7) {
+						// if (symbols >= 12  && symbols <= preambleLength + 20) {
 						// if (symbols >= preambleLength -3  && symbols <= preambleLength + 20) {
 							nextState = state.START;
 							state.lastBitState = 0;
 							state.byteBuffer = 0;
 			          		state.wordBuffer = [];
+						} else {
+							state.p += symbols;
 						}
 						break;
 
@@ -182,12 +192,14 @@ WebJack.Decoder = Class.extend({
 						} 
 						else 
 							nextState = state.PREAMBLE;
+						state.p += symbols;
 						break;
 
 					case state.DATA:
 						if (DEBUG) console.log('DATA');
 						var bits_total = symbols + state.bitCounter;
 				        var bit = state.lastBitState ^ 1;
+						state.p += symbols;
 
 				        if (bits_total > 11) {
 			          		nextState = state.PREAMBLE;
@@ -223,6 +235,7 @@ WebJack.Decoder = Class.extend({
 
 					case state.STOP:
 						if (DEBUG) console.log(' STOP');
+						state.p += symbols;
 						if (symbols == 1) {
 							nextState = state.START;
 						} else if (symbols == 3) {
